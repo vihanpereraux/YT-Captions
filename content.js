@@ -1,7 +1,6 @@
-// "yt-formatted-string
-
 // Function to change title color
-function changeTitleColor() {
+const changeCaptions = () => {
+    // caption wrapper manipulation
     const captionWindow = document.getElementsByClassName("caption-window");
     if (captionWindow) {
         captionWindow[0].style.textAlign = "center";
@@ -12,6 +11,7 @@ function changeTitleColor() {
         captionWindow[0].style.transform = "translateX(-50%)";
     }
 
+    // captions manipulation
     const captionElements = document.getElementsByClassName("ytp-caption-segment");
     if (captionElements) {
         for (let i = 0; i < captionElements.length; i++) {
@@ -22,16 +22,36 @@ function changeTitleColor() {
             captionElements[i].style.textTransform = "lowercase";
         }
     }
-  }
-  
-  // Observe changes in the page to detect when the title is available
-  const observer = new MutationObserver(() => {
-    changeTitleColor();
-  });
-  
-  // Start observing the body for changes
-  observer.observe(document.body, { childList: true, subtree: true });
-  
-  // Initial check in case the title is already loaded
-  changeTitleColor();
-  
+}
+
+const hideDOMElements = () => {
+    const secondaryColumn = document.getElementById('secondary');
+    if (secondaryColumn) {
+        secondaryColumn.style.display = 'none';
+    }
+}
+
+// Observe changes in the page to detect when the title is available
+const observer = new MutationObserver(() => {
+    changeCaptions();
+    hideDOMElements();
+
+    // top navbar color change
+    const topbar = document.getElementById('background');
+    if (topbar) {
+        topbar.style.background = 'black !important';
+    }
+
+    // background color change
+    const primary = document.getElementById('columns');
+    if (primary) {
+        primary.style.background = 'black';
+    }
+});
+
+// Start observing the body for changes
+observer.observe(document.body, { childList: true, subtree: true });
+
+// Initial check in case relevant elements are already loaded
+changeCaptions();
+hideDOMElements();
