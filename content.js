@@ -3,6 +3,7 @@ const changeCaptions = () => {
     // caption wrapper manipulation
     const captionWindow = document.getElementsByClassName("caption-window");
     if (captionWindow) {
+        captionWindow[0].style.backgroundColor = "rgba(0, 0, 0, 0)";
         captionWindow[0].style.textAlign = "center";
         captionWindow[0].style.left = "50%";
         captionWindow[0].style.width = "80vw";
