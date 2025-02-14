@@ -32,6 +32,21 @@ const hideDOMElements = () => {
     }
 }
 
+const addTransparentOverlay = () => {
+    const videoContainer = document.getElementById('cinematics-full-bleed-container');
+    if (videoContainer) {
+        videoContainer.style.position = "absolute";
+        videoContainer.style.width = "100%";
+        videoContainer.style.height = "100%";
+        videoContainer.style.left = 0;
+        videoContainer.style.top = 0;
+        videoContainer.style.zIndex = "5";
+        videoContainer.style.background = "linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4920168751094187) 51%, rgba(0,0,0,0) 100%); "; 
+        // inserting the custom div
+        // videoContainer.appendChild(overlay);
+    }
+}
+
 // Observe changes in the page to detect when the title is available
 const observer = new MutationObserver(() => {
     changeCaptions();
