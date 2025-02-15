@@ -30,6 +30,16 @@ const hideDOMElements = () => {
     if (secondaryColumn) {
         secondaryColumn.style.display = 'none';
     }
+
+    const menu = document.getElementById('actions');
+    if (menu) {
+        menu.style.display = "none";
+    }
+
+    const comments = document.getElementById('comments');
+    if (comments) {
+        comments.style.display = "none";
+    }
 }
 
 const addTransparentOverlay = () => {
