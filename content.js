@@ -1,51 +1,42 @@
-// Function to change title color
-const changeCaptions = () => {
-    // caption wrapper manipulation
-    const captionWindow = document.getElementsByClassName("caption-window");
-    if (captionWindow) {
-        captionWindow[0].style.backgroundColor = "rgba(0, 0, 0, 0)";
-        captionWindow[0].style.textAlign = "center";
-        captionWindow[0].style.left = "50%";
-        captionWindow[0].style.width = "80vw";
-        captionWindow[0].style.marginLeft = "0px";
-        captionWindow[0].style.border = "0px solid red";
-        captionWindow[0].style.transform = "translateX(-50%)";
-    }
+// Store caption settings and visibility states
+let settings = {
+    captionColor: '#ffff00', // Default color (yellow)
+    captionSize: 35, // Default size (35px)
+    showComments: false, // Default: hide comments
+    showSimilarVideos: false // Default: hide similar videos
+};
 
-    // captions manipulation
+// Function to change caption styles
+const changeCaptions = () => {
     const captionElements = document.getElementsByClassName("ytp-caption-segment");
     if (captionElements) {
         for (let i = 0; i < captionElements.length; i++) {
             captionElements[i].style.fontWeight = "500";
             captionElements[i].style.background = "rgba(8, 8, 8, 0)";
-            captionElements[i].style.color = "yellow";
-            captionElements[i].style.fontSize = "35px";
+            captionElements[i].style.color = settings.captionColor; // Use stored color
+            captionElements[i].style.fontSize = `${settings.captionSize}px`; // Use stored size
             captionElements[i].style.textTransform = "lowercase";
         }
     }
-}
+};
 
-const hideDOMElements = () => {
+// Function to hide/show DOM elements
+const updateVisibility = () => {
     const secondaryColumn = document.getElementById('secondary');
     if (secondaryColumn) {
-        secondaryColumn.style.display = 'none';
-    }
-
-    const menu = document.getElementById('actions');
-    if (menu) {
-        menu.style.display = "none";
+        secondaryColumn.style.display = settings.showSimilarVideos ? 'block' : 'none';
     }
 
     const comments = document.getElementById('comments');
     if (comments) {
-        comments.style.display = "none";
+        comments.style.display = settings.showComments ? 'block' : 'none';
     }
-}
+};
 
 // Observe changes in the page to detect when the title is available
 const observer = new MutationObserver(() => {
-    changeCaptions();
-    hideDOMElements();
+    changeCaptions(); // Apply caption styles
+    updateVisibility(); // Apply visibility settings
 
     // top navbar color change
     const topbar = document.getElementById('background');
@@ -63,6 +54,21 @@ const observer = new MutationObserver(() => {
 // Start observing the body for changes
 observer.observe(document.body, { childList: true, subtree: true });
 
+// Listen for messages from the popup
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.action === 'updateSettings') {
+        // Update stored settings
+        settings.captionColor = request.captionColor;
+        settings.captionSize = request.captionSize;
+        settings.showComments = request.showComments;
+        settings.showSimilarVideos = request.showSimilarVideos;
+
+        // Apply changes
+        changeCaptions();
+        updateVisibility();
+    }
+});
+
 // Initial check in case relevant elements are already loaded
 changeCaptions();
-hideDOMElements();
+updateVisibility();

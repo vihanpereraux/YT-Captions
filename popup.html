@@ -2,11 +2,46 @@
 <html>
   <head>
     <title>YT Title Color</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 10px;
+      }
+      h3 {
+        margin-bottom: 10px;
+      }
+      label {
+        display: block;
+        margin-bottom: 10px;
+      }
+      input[type="color"], input[type="range"] {
+        margin-bottom: 15px;
+      }
+    </style>
   </head>
   <body>
     <h3>YouTube Title Color Changer</h3>
-    <p>Reload YouTube to see the effect.</p>
+    <p>Adjust settings in real-time:</p>
 
-    <button id="test">click</button>
+    <label>
+      <input type="checkbox" id="toggleComments"> Show Comments Section
+    </label>
+
+    <label>
+      <input type="checkbox" id="toggleSimilarVideos"> Show Similar Videos Section
+    </label>
+
+    <label>
+      Caption Color:
+      <input type="color" id="captionColor" value="#ffff00">
+    </label>
+
+    <label>
+      Caption Size:
+      <input type="range" id="captionSize" min="20" max="50" value="35">
+      <span id="captionSizeValue">35px</span>
+    </label>
+
+    <script src="popup.js"></script>
   </body>
 </html>
