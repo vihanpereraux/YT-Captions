@@ -5,47 +5,96 @@
     <style>
       body {
         font-family: Arial, sans-serif;
-        padding: 10px;
+        padding: 5px 20px 20px 20px;
+        background-color: black !important;
+        border: none !important;
+        outline: none !important;
+        width: 300px;
       }
+      
       h3 {
+        color: white !important;
         margin-bottom: 10px;
+        text-align: center;
       }
+      
       label {
+        color: white !important;
         display: block;
         margin-bottom: 10px;
+        font-size: 15px;
       }
-      input[type="color"], input[type="range"] {
+
+      input[type="color"] {
+        width: 100%;
+        margin-top: 3px;
+      }
+
+      input[type="range"] {
+        width: 100%;
+        margin-top: 10px;
+      }
+
+      .heading-section {
+        margin-top: 35px;
         margin-bottom: 15px;
+      }
+
+      .section-title {
+        color: white;
+        font-size: 15px;
+      }
+
+      hr {
+        color:  rgba(255, 255, 255, 0.3);
       }
     </style>
   </head>
   <body>
-    <h3>YouTube Title Color Changer</h3>
-    <p>Adjust settings in real-time:</p>
-
+    <h3>YT Captions</h3>
+    
+    <div class="heading-section">
+      <span class="section-title">Show / Hide Elements</span>
+      <hr>
+    </div>
+    
     <label>
-      <input type="checkbox" id="toggleComments"> Show Comments Section
+      <input type="checkbox" id="toggleComments"> Show comments section
     </label>
 
     <label>
-      <input type="checkbox" id="toggleSimilarVideos"> Show Similar Videos Section
+      <input type="checkbox" id="toggleSimilarVideos"> Show similar videos section
     </label>
 
+    <div class="heading-section">
+      <span class="section-title">Change Captions</span>
+      <hr>
+    </div>
+    
     <label>
-      Caption Color:
-      <input type="color" id="captionColor" value="#ffff00">
-    </label>
-
-    <label>
-      Caption Size:
+      <div style="display: flex; justify-content: space-between;">
+        <span>Adjust size</span>
+        <span id="captionSizeValue">35px</span>
+      </div>
       <input type="range" id="captionSize" min="20" max="50" value="35">
-      <span id="captionSizeValue">35px</span>
     </label>
 
+    <div>
+      <label for="captionColor">Change caption color</label>
+      <input type="color" id="captionColor" value="#ffff00">
+    </div>
+
+    <div class="heading-section">
+      <span class="section-title">Overlay Settings</span>
+      <hr>
+    </div>
+
     <label>
-      Black Box Opacity:
+      <div style="display: flex; justify-content: space-between;">
+        <span>Adjust overlay</span>
+        <span id="blackBoxOpacityValue">0</span>
+      </div>
       <input type="range" id="blackBoxOpacity" min="0" max="1" step="0.1" value="0">
-      <span id="blackBoxOpacityValue">0</span>
     </label>
 
     <script src="popup.js"></script>
