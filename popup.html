@@ -11,13 +11,13 @@
         outline: none !important;
         width: 300px;
       }
-      
+
       h3 {
         color: white !important;
         margin-bottom: 10px;
         text-align: center;
       }
-      
+
       label {
         color: white !important;
         display: block;
@@ -43,58 +43,109 @@
       .section-title {
         color: white;
         font-size: 15px;
+      }      hr {
+        color: rgba(255, 255, 255, 0.3);
       }
 
-      hr {
-        color:  rgba(255, 255, 255, 0.3);
+      .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .toggle-btn {
+        background: none;
+        border: none;
+        color: white;
+        cursor: pointer;
+        font-size: 12px;
+        padding: 0 5px;
+        transition: transform 0.3s;
+      }
+
+      .toggle-btn.collapsed {
+        transform: rotate(-90deg);
+      }
+
+      .section-content {
+        max-height: 500px;
+        overflow: hidden;
+        transition: max-height 0.3s ease-out;
+      }
+
+      .section-content.collapsed {
+        max-height: 0;
       }
     </style>
   </head>
   <body>
-    <h3>YT Captions</h3>
-    
-    <div class="heading-section">
-      <span class="section-title">Show / Hide Elements</span>
-      <hr>
-    </div>
-    
-    <label>
-      <input type="checkbox" id="toggleComments"> Show comments section
-    </label>
-
-    <label>
-      <input type="checkbox" id="toggleSimilarVideos"> Show similar videos section
-    </label>
-
-    <div class="heading-section">
-      <span class="section-title">Change Captions</span>
-      <hr>
-    </div>
-    
-    <label>
-      <div style="display: flex; justify-content: space-between;">
-        <span>Adjust size</span>
-        <span id="captionSizeValue">35px</span>
+    <h3>YT Captions</h3>    <div class="heading-section">
+      <div class="section-header">
+        <span class="section-title">Show / Hide Elements</span>
+        <button class="toggle-btn" data-section="elements">▼</button>
       </div>
-      <input type="range" id="captionSize" min="20" max="50" value="35">
-    </label>
+      <hr />
+    </div>
 
-    <div>
-      <label for="captionColor">Change caption color</label>
-      <input type="color" id="captionColor" value="#ffff00">
+    <div class="section-content" id="elements-section">
+      <label>
+        <input type="checkbox" id="toggleComments" /> Show comments section
+      </label>
+
+      <label>
+        <input type="checkbox" id="toggleSimilarVideos" /> Show similar videos
+        section
+      </label>
     </div>
 
     <div class="heading-section">
-      <span class="section-title">Overlay Settings</span>
-      <hr>
+      <div class="section-header">
+        <span class="section-title">Change Captions</span>
+        <button class="toggle-btn" data-section="captions">▼</button>
+      </div>
+      <hr />
+    </div>
+
+    <div class="section-content" id="captions-section">
+      <label>
+        <div style="display: flex; justify-content: space-between">
+          <span>Adjust size</span>
+          <span id="captionSizeValue">35px</span>
+        </div>
+        <input type="range" id="captionSize" min="20" max="50" value="35" />
+      </label>
+
+      <div>
+        <label for="captionColor">Change caption color</label>
+        <input type="color" id="captionColor" value="#ffff00" />
+      </div>
+    </div>
+
+    <div class="heading-section">
+      <div class="section-header">
+        <span class="section-title">Overlay Settings</span>
+        <button class="toggle-btn" data-section="overlay">▼</button>
+      </div>
+      <hr />
     </div>
 
     <label>
-      <div style="display: flex; justify-content: space-between;">
+      <div style="display: flex; justify-content: space-between">
         <span>Adjust overlay</span>
         <span id="blackBoxOpacityValue">0</span>
       </div>
-      <input type="range" id="blackBoxOpacity" min="0" max="1" step="0.1" value="0">
+      <input
+        type="range"
+        id="blackBoxOpacity"
+        min="0"
+        max="1"
+        step="0.1"
+        value="0"
+      />
+    </label>
+
+    <label>
+      <input type="checkbox" id="toggleBlackAndWhite" /> Black & White Video
     </label>
 
     <script src="popup.js"></script>

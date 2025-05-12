@@ -4,7 +4,8 @@ let settings = {
     captionSize: 35,
     showComments: false,
     showSimilarVideos: false,
-    blackBoxOpacity: 0 
+    blackBoxOpacity: 0,
+    blackAndWhite: false
 };
 
 // black overlay element
@@ -30,24 +31,53 @@ const updateBlackBox = () => {
         blackBox = createBlackBox();
         const videoPlayer = document.getElementById('movie_player');
         if (videoPlayer) {
-            videoPlayer.style.position = 'relative'; 
+            videoPlayer.style.position = 'relative';
             videoPlayer.appendChild(blackBox);
         }
     }
     blackBox.style.opacity = settings.blackBoxOpacity;
 };
 
+// update video filter
+const updateVideoFilter = () => {
+    const video = document.querySelector('video');
+    const moviePlayer = document.getElementById('movie_player');
+    
+    if (video) {
+        // filter to the video element
+        video.style.filter = settings.blackAndWhite ? 'grayscale(100%)' : 'none';
+    }
+    
+    if (moviePlayer) {
+        // Also apply filter to the container to catch any video changes
+        moviePlayer.style.filter = settings.blackAndWhite ? 'grayscale(100%)' : 'none';
+    }
+
+    const captionWindow = document.querySelector('.ytp-caption-window-container');
+    if (captionWindow) {
+        captionWindow.style.filter = 'none';
+        captionWindow.style.zIndex = '10000';
+    }
+};
+
 // change caption styles
 const changeCaptions = () => {
-    const captionElements = document.getElementsByClassName("ytp-caption-segment");
-    if (captionElements) {
-        for (let i = 0; i < captionElements.length; i++) {
-            captionElements[i].style.fontWeight = "500";
-            captionElements[i].style.background = "rgba(8, 8, 8, 0)";
-            captionElements[i].style.color = settings.captionColor;
-            captionElements[i].style.fontSize = `${settings.captionSize}px`;
-            captionElements[i].style.textTransform = "lowercase";
-        }
+    const captionWindow = document.querySelector('.ytp-caption-window-container');
+    if (captionWindow) {
+        captionWindow.style.zIndex = '10000';
+    }
+    
+    const captionElements = document.querySelectorAll('.ytp-caption-segment');
+    if (captionElements.length > 0) {
+        captionElements.forEach(caption => {
+            caption.style.cssText = `
+                color: ${settings.captionColor} !important;
+                font-size: ${settings.captionSize}px !important;
+                font-weight: 500 !important;
+                background: transparent !important;
+                text-transform: lowercase !important;
+            `;
+        });
     }
 };
 
@@ -64,46 +94,63 @@ const updateVisibility = () => {
     }
 };
 
-// Observe changes in the page to detect when the title is available
+// listening to the requests from the popup
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.action === 'updateSettings') {
+        settings = { ...settings, ...request };
+        changeCaptions();
+        updateVisibility();
+        updateBlackBox();
+        updateVideoFilter();
+    } else if (request.action === 'getSettings') {
+        sendResponse(settings);
+    }
+});
+
+// apply stored settings when the content script is loaded
+chrome.storage.sync.get(
+    ['captionColor', 'captionSize', 'showComments', 'showSimilarVideos', 'blackBoxOpacity', 'blackAndWhite'],
+    (storedSettings) => {
+        settings = { ...settings, ...storedSettings };
+        changeCaptions();
+        updateVisibility();
+        updateBlackBox();
+        updateVideoFilter();
+    }
+);
+
+// separate observer for captions
+const captionObserver = new MutationObserver(() => {
+    changeCaptions();
+});
+
+// observing captions
+const startCaptionObserver = () => {
+    const captionContainer = document.querySelector('.ytp-caption-window-container');
+    if (captionContainer) {
+        captionObserver.observe(captionContainer, {
+            childList: true,
+            subtree: true,
+            characterData: true
+        });
+    }
+};
+
+// observe changes in the page
 const observer = new MutationObserver(() => {
     changeCaptions();
-    updateVisibility(); 
-    updateBlackBox(); 
-
-    const topbar = document.getElementById('background');
-    if (topbar) {
-        topbar.style.background = 'black !important';
-    }
-    // background color change
-    const primary = document.getElementById('columns');
-    if (primary) {
-        primary.style.background = 'black';
-    }
+    updateVisibility();
+    updateBlackBox();
+    updateVideoFilter();
+    startCaptionObserver();
 });
 
 // observing the body for changes
 observer.observe(document.body, { childList: true, subtree: true });
 
-// listening to the requests from the popup
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.action === 'updateSettings') {
-        // update stored settings
-        settings.captionColor = request.captionColor;
-        settings.captionSize = request.captionSize;
-        settings.showComments = request.showComments;
-        settings.showSimilarVideos = request.showSimilarVideos;
-        settings.blackBoxOpacity = request.blackBoxOpacity;
-
-        changeCaptions();
-        updateVisibility();
-        updateBlackBox();
-    } else if (request.action === 'getSettings') {
-        // update popup with current settings
-        sendResponse(settings);
-    }
-});
-
-// in case relevant elements are already loaded
+// init setup
+startCaptionObserver();
 changeCaptions();
 updateVisibility();
 updateBlackBox();
+updateVideoFilter();
