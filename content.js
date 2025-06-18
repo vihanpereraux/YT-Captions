@@ -1,3 +1,4 @@
+// Default settings
 let settings = {
     captionColor: '#ffff00',
     captionSize: 35,
@@ -7,6 +8,7 @@ let settings = {
     blackAndWhite: false
 };
 
+// Create black overlay element
 const createBlackBox = () => {
     const blackBox = document.createElement('div');
     blackBox.id = 'black-box-overlay';
@@ -22,6 +24,7 @@ const createBlackBox = () => {
     return blackBox;
 };
 
+// Update black box opacity
 const updateBlackBox = () => {
     let blackBox = document.getElementById('black-box-overlay');
     if (!blackBox) {
@@ -35,6 +38,7 @@ const updateBlackBox = () => {
     blackBox.style.opacity = settings.blackBoxOpacity;
 };
 
+// Apply grayscale filter to video
 const updateVideoFilter = () => {
     const video = document.querySelector('video');
     const moviePlayer = document.getElementById('movie_player');
@@ -42,6 +46,7 @@ const updateVideoFilter = () => {
     if (video) video.style.filter = settings.blackAndWhite ? 'grayscale(100%)' : 'none';
     if (moviePlayer) moviePlayer.style.filter = settings.blackAndWhite ? 'grayscale(100%)' : 'none';
     
+    // Ensure captions remain visible
     const captionWindow = document.querySelector('.ytp-caption-window-container');
     if (captionWindow) {
         captionWindow.style.filter = 'none';
@@ -49,31 +54,23 @@ const updateVideoFilter = () => {
     }
 };
 
+// Update caption styles
 const changeCaptions = () => {
-    let captions = document.querySelectorAll('.ytp-caption-segment');
-    if (captions.length === 0) {
-        captions = document.querySelectorAll('.captions-text span');
-    }
-    captions.forEach(caption => {
-        caption.style.color = `${settings.captionColor} !important`;
-        caption.style.fontSize = `${settings.captionSize}px !important`;
-        caption.style.fontWeight = '500 !important';
-        caption.style.background = 'transparent !important';
-        caption.style.textTransform = 'lowercase !important';
-        
-        const originalClass = caption.className;
-        caption.className = '';
-        setTimeout(() => {
-            caption.className = originalClass;
-        }, 50);
-    });
+    const captionWindow = document.querySelector('.ytp-caption-window-container');
+    if (captionWindow) captionWindow.style.zIndex = '10000';
     
-    const captionContainer = document.querySelector('.ytp-caption-window-container');
-    if (captionContainer) {
-        captionContainer.style.zIndex = '10000';
-    }
+    document.querySelectorAll('.ytp-caption-segment').forEach(caption => {
+        caption.style.cssText = `
+            color: ${settings.captionColor} !important;
+            font-size: ${settings.captionSize}px !important;
+            font-weight: 500 !important;
+            background: transparent !important;
+            text-transform: lowercase !important;
+        `;
+    });
 };
 
+// Toggle visibility of comments and related videos
 const updateVisibility = () => {
     const secondaryColumn = document.getElementById('secondary');
     if (secondaryColumn) secondaryColumn.style.display = settings.showSimilarVideos ? 'block' : 'none';
@@ -82,6 +79,7 @@ const updateVisibility = () => {
     if (comments) comments.style.display = settings.showComments ? 'block' : 'none';
 };
 
+// Handle messages from popup
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === 'updateSettings') {
         settings = { ...settings, ...request };
@@ -92,55 +90,47 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     }
 });
 
-const captionObserver = new MutationObserver((mutations) => {
-    mutations.forEach(() => {
-        changeCaptions();
-    });
-});
-
+// Watch for caption changes
+const captionObserver = new MutationObserver(changeCaptions);
 const startCaptionObserver = () => {
-    const captionContainer = document.querySelector('.ytp-caption-window-container') || 
-                           document.querySelector('.captions-text');
+    const captionContainer = document.querySelector('.ytp-caption-window-container');
     if (captionContainer) {
         captionObserver.observe(captionContainer, {
             childList: true,
             subtree: true,
-            characterData: true,
-            attributes: true
+            characterData: true
         });
     }
 };
 
-const observer = new MutationObserver((mutations) => {
-    mutations.forEach(() => {
-        changeCaptions();
-        updateVisibility();
-        updateBlackBox();
-        updateVideoFilter();
-        startCaptionObserver();
-    });
+// Watch for DOM changes
+const observer = new MutationObserver(() => {
+    changeCaptions();
+    updateVisibility();
+    updateBlackBox();
+    updateVideoFilter();
+    startCaptionObserver();
 });
 
+// Load settings from storage and initialize
 chrome.storage.local.get(
     ['captionColor', 'captionSize', 'showComments', 'showSimilarVideos', 'blackBoxOpacity', 'blackAndWhite'],
     (storedSettings) => {
         settings = { ...settings, ...storedSettings };
+        
+        // Apply all settings
         changeCaptions();
         updateVisibility();
         updateBlackBox();
         updateVideoFilter();
-    
-        setTimeout(() => {
-            startCaptionObserver();
-            observer.observe(document.body, { 
-                childList: true, 
-                subtree: true,
-                attributes: true
-            });
-        }, 500);
+        
+        // Start observers
+        startCaptionObserver();
+        observer.observe(document.body, { childList: true, subtree: true });
     }
 );
 
+// Listen for storage changes
 chrome.storage.onChanged.addListener((changes, area) => {
     if (area === 'local') {
         for (let key in changes) {
@@ -152,5 +142,3 @@ chrome.storage.onChanged.addListener((changes, area) => {
         updateVideoFilter();
     }
 });
-
-setInterval(changeCaptions, 1000);
