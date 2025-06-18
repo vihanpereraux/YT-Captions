@@ -1,14 +1,12 @@
-// store caption settings and visibility states
 let settings = {
     captionColor: '#ffff00',
     captionSize: 35,
-    showComments: false,
-    showSimilarVideos: false,
+    showComments: true,
+    showSimilarVideos: true,
     blackBoxOpacity: 0,
     blackAndWhite: false
 };
 
-// black overlay element
 const createBlackBox = () => {
     const blackBox = document.createElement('div');
     blackBox.id = 'black-box-overlay';
@@ -24,7 +22,6 @@ const createBlackBox = () => {
     return blackBox;
 };
 
-// update the black box opacity
 const updateBlackBox = () => {
     let blackBox = document.getElementById('black-box-overlay');
     if (!blackBox) {
@@ -38,21 +35,13 @@ const updateBlackBox = () => {
     blackBox.style.opacity = settings.blackBoxOpacity;
 };
 
-// update video filter
 const updateVideoFilter = () => {
     const video = document.querySelector('video');
     const moviePlayer = document.getElementById('movie_player');
     
-    if (video) {
-        // filter to the video element
-        video.style.filter = settings.blackAndWhite ? 'grayscale(100%)' : 'none';
-    }
+    if (video) video.style.filter = settings.blackAndWhite ? 'grayscale(100%)' : 'none';
+    if (moviePlayer) moviePlayer.style.filter = settings.blackAndWhite ? 'grayscale(100%)' : 'none';
     
-    if (moviePlayer) {
-        // Also apply filter to the container to catch any video changes
-        moviePlayer.style.filter = settings.blackAndWhite ? 'grayscale(100%)' : 'none';
-    }
-
     const captionWindow = document.querySelector('.ytp-caption-window-container');
     if (captionWindow) {
         captionWindow.style.filter = 'none';
@@ -60,41 +49,39 @@ const updateVideoFilter = () => {
     }
 };
 
-// change caption styles
 const changeCaptions = () => {
-    const captionWindow = document.querySelector('.ytp-caption-window-container');
-    if (captionWindow) {
-        captionWindow.style.zIndex = '10000';
+    let captions = document.querySelectorAll('.ytp-caption-segment');
+    if (captions.length === 0) {
+        captions = document.querySelectorAll('.captions-text span');
     }
+    captions.forEach(caption => {
+        caption.style.color = `${settings.captionColor} !important`;
+        caption.style.fontSize = `${settings.captionSize}px !important`;
+        caption.style.fontWeight = '500 !important';
+        caption.style.background = 'transparent !important';
+        caption.style.textTransform = 'lowercase !important';
+        
+        const originalClass = caption.className;
+        caption.className = '';
+        setTimeout(() => {
+            caption.className = originalClass;
+        }, 50);
+    });
     
-    const captionElements = document.querySelectorAll('.ytp-caption-segment');
-    if (captionElements.length > 0) {
-        captionElements.forEach(caption => {
-            caption.style.cssText = `
-                color: ${settings.captionColor} !important;
-                font-size: ${settings.captionSize}px !important;
-                font-weight: 500 !important;
-                background: transparent !important;
-                text-transform: lowercase !important;
-            `;
-        });
+    const captionContainer = document.querySelector('.ytp-caption-window-container');
+    if (captionContainer) {
+        captionContainer.style.zIndex = '10000';
     }
 };
 
-// hide/show comments and similar videos
 const updateVisibility = () => {
     const secondaryColumn = document.getElementById('secondary');
-    if (secondaryColumn) {
-        secondaryColumn.style.display = settings.showSimilarVideos ? 'block' : 'none';
-    }
+    if (secondaryColumn) secondaryColumn.style.display = settings.showSimilarVideos ? 'block' : 'none';
 
     const comments = document.getElementById('comments');
-    if (comments) {
-        comments.style.display = settings.showComments ? 'block' : 'none';
-    }
+    if (comments) comments.style.display = settings.showComments ? 'block' : 'none';
 };
 
-// listening to the requests from the popup
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === 'updateSettings') {
         settings = { ...settings, ...request };
@@ -102,13 +89,39 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         updateVisibility();
         updateBlackBox();
         updateVideoFilter();
-    } else if (request.action === 'getSettings') {
-        sendResponse(settings);
     }
 });
 
-// apply stored settings when the content script is loaded
-chrome.storage.sync.get(
+const captionObserver = new MutationObserver((mutations) => {
+    mutations.forEach(() => {
+        changeCaptions();
+    });
+});
+
+const startCaptionObserver = () => {
+    const captionContainer = document.querySelector('.ytp-caption-window-container') || 
+                           document.querySelector('.captions-text');
+    if (captionContainer) {
+        captionObserver.observe(captionContainer, {
+            childList: true,
+            subtree: true,
+            characterData: true,
+            attributes: true
+        });
+    }
+};
+
+const observer = new MutationObserver((mutations) => {
+    mutations.forEach(() => {
+        changeCaptions();
+        updateVisibility();
+        updateBlackBox();
+        updateVideoFilter();
+        startCaptionObserver();
+    });
+});
+
+chrome.storage.local.get(
     ['captionColor', 'captionSize', 'showComments', 'showSimilarVideos', 'blackBoxOpacity', 'blackAndWhite'],
     (storedSettings) => {
         settings = { ...settings, ...storedSettings };
@@ -116,41 +129,28 @@ chrome.storage.sync.get(
         updateVisibility();
         updateBlackBox();
         updateVideoFilter();
+    
+        setTimeout(() => {
+            startCaptionObserver();
+            observer.observe(document.body, { 
+                childList: true, 
+                subtree: true,
+                attributes: true
+            });
+        }, 500);
     }
 );
 
-// separate observer for captions
-const captionObserver = new MutationObserver(() => {
-    changeCaptions();
-});
-
-// observing captions
-const startCaptionObserver = () => {
-    const captionContainer = document.querySelector('.ytp-caption-window-container');
-    if (captionContainer) {
-        captionObserver.observe(captionContainer, {
-            childList: true,
-            subtree: true,
-            characterData: true
-        });
+chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === 'local') {
+        for (let key in changes) {
+            settings[key] = changes[key].newValue;
+        }
+        changeCaptions();
+        updateVisibility();
+        updateBlackBox();
+        updateVideoFilter();
     }
-};
-
-// observe changes in the page
-const observer = new MutationObserver(() => {
-    changeCaptions();
-    updateVisibility();
-    updateBlackBox();
-    updateVideoFilter();
-    startCaptionObserver();
 });
 
-// observing the body for changes
-observer.observe(document.body, { childList: true, subtree: true });
-
-// init setup
-startCaptionObserver();
-changeCaptions();
-updateVisibility();
-updateBlackBox();
-updateVideoFilter();
+setInterval(changeCaptions, 1000);

@@ -1,33 +1,41 @@
-const sendSettings = () => {
-    const showComments = document.getElementById('toggleComments').checked;
-    const showSimilarVideos = document.getElementById('toggleSimilarVideos').checked;
-    const captionColor = document.getElementById('captionColor').value;
-    const captionSize = document.getElementById('captionSize').value;
-    const blackBoxOpacity = document.getElementById('blackBoxOpacity').value;
-    const blackAndWhite = document.getElementById('toggleBlackAndWhite').checked;
+const getCurrentSettings = () => {
+    chrome.storage.local.get(
+        ['showComments', 'showSimilarVideos', 'captionColor', 'captionSize', 'blackBoxOpacity', 'blackAndWhite', 'collapsedSections'],
+        (settings) => {
+            document.getElementById('toggleComments').checked = settings.showComments ?? true;
+            document.getElementById('toggleSimilarVideos').checked = settings.showSimilarVideos ?? true;
+            document.getElementById('captionColor').value = settings.captionColor ?? '#ffff00';
+            document.getElementById('captionSize').value = settings.captionSize ?? 35;
+            document.getElementById('captionSizeValue').textContent = `${settings.captionSize ?? 35}px`;
+            document.getElementById('blackBoxOpacity').value = settings.blackBoxOpacity ?? 0;
+            document.getElementById('blackBoxOpacityValue').textContent = settings.blackBoxOpacity ?? 0;
+            document.getElementById('toggleBlackAndWhite').checked = settings.blackAndWhite ?? false;
+            sendSettingsToContent();
+        }
+    );
+};
 
+const sendSettingsToContent = () => {
     const settings = {
-        showComments,
-        showSimilarVideos,
-        captionColor,
-        captionSize,
-        blackBoxOpacity,
-        blackAndWhite
+        showComments: document.getElementById('toggleComments').checked,
+        showSimilarVideos: document.getElementById('toggleSimilarVideos').checked,
+        captionColor: document.getElementById('captionColor').value,
+        captionSize: document.getElementById('captionSize').value,
+        blackBoxOpacity: document.getElementById('blackBoxOpacity').value,
+        blackAndWhite: document.getElementById('toggleBlackAndWhite').checked
     };
+    chrome.storage.local.set(settings);
 
-    chrome.storage.sync.set(settings, () => {
-        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-            if (tabs[0]) {
-                chrome.tabs.sendMessage(tabs[0].id, {
-                    action: 'updateSettings',
-                    ...settings
-                });
-            }
-        });
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        if (tabs[0]) {
+            chrome.tabs.sendMessage(tabs[0].id, {
+                action: 'updateSettings',
+                ...settings
+            });
+        }
     });
 };
 
-// section toggling
 const toggleSection = (sectionName, isCollapsed) => {
     const button = document.querySelector(`[data-section="${sectionName}"]`);
     const content = document.getElementById(`${sectionName}-section`);
@@ -36,24 +44,21 @@ const toggleSection = (sectionName, isCollapsed) => {
         button.classList.toggle('collapsed', isCollapsed);
         content.classList.toggle('collapsed', isCollapsed);
         
-        // save the state
-        chrome.storage.sync.get(['collapsedSections'], (result) => {
+        chrome.storage.local.get(['collapsedSections'], (result) => {
             const collapsedSections = result.collapsedSections || {};
             collapsedSections[sectionName] = isCollapsed;
-            chrome.storage.sync.set({ collapsedSections });
+            chrome.storage.local.set({ collapsedSections });
         });
     }
 };
 
-// Initialize section states
 const initializeSections = () => {
-    chrome.storage.sync.get(['collapsedSections'], (result) => {
+    chrome.storage.local.get(['collapsedSections'], (result) => {
         const collapsedSections = result.collapsedSections || {};
         
-        // Setup toggle buttons
         document.querySelectorAll('.toggle-btn').forEach(button => {
             const sectionName = button.dataset.section;
-            const isCollapsed = collapsedSections[sectionName] || false;
+            const isCollapsed = collapsedSections[sectionName] ?? false;
             
             toggleSection(sectionName, isCollapsed);
             
@@ -65,44 +70,20 @@ const initializeSections = () => {
     });
 };
 
-const getCurrentSettings = () => {
-    chrome.storage.sync.get(
-        ['showComments', 'showSimilarVideos', 'captionColor', 'captionSize', 'blackBoxOpacity', 'blackAndWhite'],
-        (settings) => {
-            document.getElementById('toggleComments').checked = settings.showComments ?? false;
-            document.getElementById('toggleSimilarVideos').checked = settings.showSimilarVideos ?? false;
-            document.getElementById('captionColor').value = settings.captionColor ?? '#ffff00';
-            document.getElementById('captionSize').value = settings.captionSize ?? 35;
-            document.getElementById('captionSizeValue').textContent = `${settings.captionSize ?? 35}px`;
-            document.getElementById('blackBoxOpacity').value = settings.blackBoxOpacity ?? 0;
-            document.getElementById('blackBoxOpacityValue').textContent = settings.blackBoxOpacity ?? 0;
-            document.getElementById('toggleBlackAndWhite').checked = settings.blackAndWhite ?? false;
-
-            chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-                if (tabs[0]) {
-                    chrome.tabs.sendMessage(tabs[0].id, {
-                        action: 'updateSettings',
-                        ...settings
-                    });
-                }
-            });
-        }
-    );
-};
-
-document.getElementById('toggleComments').addEventListener('change', sendSettings);
-document.getElementById('toggleSimilarVideos').addEventListener('change', sendSettings);
-document.getElementById('captionColor').addEventListener('input', sendSettings);
+document.getElementById('toggleComments').addEventListener('change', sendSettingsToContent);
+document.getElementById('toggleSimilarVideos').addEventListener('change', sendSettingsToContent);
+document.getElementById('captionColor').addEventListener('input', sendSettingsToContent);
 document.getElementById('captionSize').addEventListener('input', () => {
     document.getElementById('captionSizeValue').textContent = `${document.getElementById('captionSize').value}px`;
-    sendSettings();
+    sendSettingsToContent();
 });
 document.getElementById('blackBoxOpacity').addEventListener('input', () => {
     document.getElementById('blackBoxOpacityValue').textContent = document.getElementById('blackBoxOpacity').value;
-    sendSettings();
+    sendSettingsToContent();
 });
-document.getElementById('toggleBlackAndWhite').addEventListener('change', sendSettings);
+document.getElementById('toggleBlackAndWhite').addEventListener('change', sendSettingsToContent);
 
-// Initialize settings and section states
-getCurrentSettings();
-initializeSections();
+document.addEventListener('DOMContentLoaded', () => {
+    getCurrentSettings();
+    initializeSections();
+});
