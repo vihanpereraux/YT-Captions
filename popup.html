@@ -5,7 +5,7 @@
     <style>
       body {
         font-family: Arial, sans-serif;
-        padding: 5px 20px 20px 20px;
+        padding: 15px;
         background-color: black !important;
         width: 300px;
       }
@@ -20,6 +20,7 @@
         margin-bottom: 10px;
         text-align: center !important;
         font-size: 13px;
+        margin-bottom: 30px;
       }
       label {
         color: white !important;
@@ -75,10 +76,7 @@
   </head>
   <body>
     <h3>YT Captions</h3>
-    <p
-      id="version-number"
-      style="color: white; opacity: 0.75; text-align: right"
-    >
+    <p id="version-number" style="color: white; opacity: 0.75; text-align: right">
       Version 1.5
     </p>
 
@@ -138,14 +136,16 @@
       </div>
       <div class="section-content" id="elements-section">
         <label>
+          <input type="checkbox" id="toggleTopRow" /> Show video top row
+        </label>
+        <label>
           <input type="checkbox" id="toggleComments" /> Show comments section
         </label>
         <label>
           <input type="checkbox" id="toggleSimilarVideos" /> Show similar videos
         </label>
         <label>
-          <input type="checkbox" id="toggleDescription" /> Show video
-          description
+          <input type="checkbox" id="toggleDescription" /> Show video description
         </label>
       </div>
     </div>
@@ -162,8 +162,7 @@
           <input type="checkbox" id="toggleShareButton" /> Show Share button
         </label>
         <label>
-          <input type="checkbox" id="toggleDownloadButton" /> Show Download
-          button
+          <input type="checkbox" id="toggleDownloadButton" /> Show Download button
         </label>
         <label>
           <input type="checkbox" id="toggleClipButton" /> Show Clip button
@@ -171,13 +170,16 @@
         <label>
           <input type="checkbox" id="toggleSaveButton" /> Show Save button
         </label>
+        <label>
+          <input type="checkbox" id="toggleChannelDetails" /> Show Channel Data
+        </label>
       </div>
     </div>
 
     <div>
       <div class="heading-section">
         <div class="section-header">
-          <span class="section-title">Experimnetal Video Effects</span>
+          <span class="section-title">Experimental Video Effects</span>
         </div>
         <hr />
       </div>

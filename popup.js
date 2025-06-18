@@ -1,5 +1,6 @@
 const sendSettingsToContent = () => {
     const settings = {
+        showTopRow: document.getElementById('toggleTopRow').checked,
         showComments: document.getElementById('toggleComments').checked,
         showSimilarVideos: document.getElementById('toggleSimilarVideos').checked,
         showDescription: document.getElementById('toggleDescription').checked,
@@ -7,6 +8,7 @@ const sendSettingsToContent = () => {
         showDownloadButton: document.getElementById('toggleDownloadButton').checked,
         showClipButton: document.getElementById('toggleClipButton').checked,
         showSaveButton: document.getElementById('toggleSaveButton').checked,
+        showChannelDetails: document.getElementById('toggleChannelDetails').checked,
         captionColor: document.getElementById('captionColor').value,
         captionSize: document.getElementById('captionSize').value,
         blackBoxOpacity: document.getElementById('blackBoxOpacity').value,
@@ -60,10 +62,11 @@ const initializeSections = () => {
 
 const getCurrentSettings = () => {
     chrome.storage.local.get([
-        'showComments', 'showSimilarVideos', 'showDescription',
+        'showTopRow', 'showComments', 'showSimilarVideos', 'showDescription',
         'showShareButton', 'showDownloadButton', 'showClipButton', 'showSaveButton',
-        'captionColor', 'captionSize', 'blackBoxOpacity', 'blackAndWhite'
+        'showChannelDetails', 'captionColor', 'captionSize', 'blackBoxOpacity', 'blackAndWhite'
     ], (settings) => {
+        document.getElementById('toggleTopRow').checked = settings.showTopRow ?? true;
         document.getElementById('toggleComments').checked = settings.showComments ?? true;
         document.getElementById('toggleSimilarVideos').checked = settings.showSimilarVideos ?? true;
         document.getElementById('toggleDescription').checked = settings.showDescription ?? true;
@@ -71,6 +74,7 @@ const getCurrentSettings = () => {
         document.getElementById('toggleDownloadButton').checked = settings.showDownloadButton ?? true;
         document.getElementById('toggleClipButton').checked = settings.showClipButton ?? true;
         document.getElementById('toggleSaveButton').checked = settings.showSaveButton ?? true;
+        document.getElementById('toggleChannelDetails').checked = settings.showChannelDetails ?? true;
         document.getElementById('captionColor').value = settings.captionColor ?? '#ffff00';
         document.getElementById('captionSize').value = settings.captionSize ?? 35;
         document.getElementById('captionSizeValue').textContent = `${settings.captionSize ?? 35}px`;
@@ -82,7 +86,8 @@ const getCurrentSettings = () => {
     });
 };
 
-// event listeners
+// Event listeners
+document.getElementById('toggleTopRow').addEventListener('change', sendSettingsToContent);
 document.getElementById('toggleComments').addEventListener('change', sendSettingsToContent);
 document.getElementById('toggleSimilarVideos').addEventListener('change', sendSettingsToContent);
 document.getElementById('toggleDescription').addEventListener('change', sendSettingsToContent);
@@ -90,6 +95,7 @@ document.getElementById('toggleShareButton').addEventListener('change', sendSett
 document.getElementById('toggleDownloadButton').addEventListener('change', sendSettingsToContent);
 document.getElementById('toggleClipButton').addEventListener('change', sendSettingsToContent);
 document.getElementById('toggleSaveButton').addEventListener('change', sendSettingsToContent);
+document.getElementById('toggleChannelDetails').addEventListener('change', sendSettingsToContent);
 document.getElementById('captionColor').addEventListener('input', sendSettingsToContent);
 document.getElementById('captionSize').addEventListener('input', () => {
     document.getElementById('captionSizeValue').textContent = `${document.getElementById('captionSize').value}px`;

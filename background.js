@@ -1,5 +1,6 @@
 chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.local.set({
+    showTopRow: true,
     showComments: true,
     showSimilarVideos: true,
     showDescription: true,
@@ -7,6 +8,7 @@ chrome.runtime.onInstalled.addListener(() => {
     showDownloadButton: true,
     showClipButton: true,
     showSaveButton: true,
+    showChannelDetails: true,
     captionColor: '#ffff00',
     captionSize: 35,
     blackBoxOpacity: 0,

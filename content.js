@@ -1,4 +1,5 @@
 let settings = {
+    showTopRow: true,
     showComments: true,
     showSimilarVideos: true,
     showDescription: true,
@@ -6,6 +7,7 @@ let settings = {
     showDownloadButton: true,
     showClipButton: true,
     showSaveButton: true,
+    showChannelDetails: true,
     captionColor: '#ffff00',
     captionSize: 35,
     blackBoxOpacity: 0,
@@ -115,7 +117,8 @@ const updatePlayerControls = () => {
         { selector: '[aria-label="Share"], .ytp-share-button', show: settings.showShareButton },
         { selector: '[aria-label="Download"], .ytp-download-button', show: settings.showDownloadButton },
         { selector: '[aria-label="Clip"], .ytp-clip-button', show: settings.showClipButton },
-        { selector: '[aria-label="Save"], .ytp-save-button', show: settings.showSaveButton }
+        { selector: '[aria-label="Save"], .ytp-save-button', show: settings.showSaveButton },
+        { selector: '.ytd-watch-metadata', show: settings.showChannelDetails }
     ];
     controls.forEach(control => {
         document.querySelectorAll(control.selector).forEach(el => {
@@ -126,6 +129,7 @@ const updatePlayerControls = () => {
 
 const updateVisibility = () => {
     const elements = [
+        { selector: '#top-row, ytd-video-primary-info-renderer', show: settings.showTopRow },
         { selector: '#comments, ytd-comments', show: settings.showComments },
         { selector: '#secondary, ytd-watch-next-secondary-results-renderer', show: settings.showSimilarVideos },
         { selector: '#description, #info-contents, ytd-video-secondary-info-renderer', show: settings.showDescription }
