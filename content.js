@@ -11,7 +11,8 @@ let settings = {
     captionColor: '#ffff00',
     captionSize: 35,
     blackBoxOpacity: 0,
-    blackAndWhite: false
+    blackAndWhite: false,
+    topBarOpacity: 100
 };
 
 const waitForElement = (selector, callback, attempts = 10, interval = 200) => {
@@ -29,6 +30,7 @@ const applySettings = () => {
     updateBlackBox();
     updateVideoFilter();
     setupCaptionObservers();
+    updateTopBarOpacity(); 
 };
 
 const initialize = () => {
@@ -55,6 +57,13 @@ const initialize = () => {
             }
         }, 1000);
     });
+};
+
+const updateTopBarOpacity = () => {
+    const topBar = document.querySelector('#container.ytd-masthead');
+    if (topBar) {
+        topBar.style.opacity = settings.topBarOpacity / 100;
+    }
 };
 
 const applyCaptionStyles = (element) => {
@@ -156,6 +165,7 @@ chrome.runtime.onMessage.addListener((request) => {
         updateBlackBox();
         updateVideoFilter();
         setupCaptionObservers();
+        updateTopBarOpacity(); // Add this line
     }
 });
 
@@ -168,6 +178,7 @@ chrome.storage.onChanged.addListener((changes) => {
     updateBlackBox();
     updateVideoFilter();
     setupCaptionObservers();
+    updateTopBarOpacity(); // Add this line
 });
 
 initialize();

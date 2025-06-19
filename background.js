@@ -12,7 +12,8 @@ chrome.runtime.onInstalled.addListener(() => {
     captionColor: '#ffff00',
     captionSize: 35,
     blackBoxOpacity: 0,
-    blackAndWhite: false
+    blackAndWhite: false,
+    topBarOpacity: 100 // New setting with default value 100%
   });
 });
 

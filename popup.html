@@ -5,9 +5,9 @@
     <style>
       body {
         font-family: Arial, sans-serif;
-        padding: 15px;
+        padding: 6px;
         background-color: black !important;
-        width: 300px;
+        width: 320px;
       }
       h3 {
         color: white !important;
@@ -15,43 +15,78 @@
         text-align: center;
         font-size: 18px;
       }
-      p {
+
+      .section-title {
+        text-align: center !important;
+        font-size: 14px !important;
+        opacity: 1;
+        color: white;
+        font-weight: 480;
+      }
+      
+      #layout-controls-wrapper {
+        padding: 15px;
+        padding-top: 1px !important;
+        background-color: rgb(14, 14, 14);
+        border: 2px solid rgb(22, 22, 22);
+        border-radius: 10px;
+        margin-top: -10px;
+      }
+
+      #player-controls-wrapper {
+        padding: 15px;
+        padding-top: 1px !important;
+        background-color: rgb(14, 14, 14);
+        border: 2px solid rgb(22, 22, 22);
+        border-radius: 10px;
+        margin-top: -10px;
+      }
+
+      #version-number {
         color: white !important;
         margin-bottom: 10px;
         text-align: center !important;
-        font-size: 13px;
+        font-size: 10px;
         margin-bottom: 30px;
       }
+
       label {
         color: white !important;
         display: block;
         margin-bottom: 10px;
-        font-size: 15px;
+        font-size: 13px;
       }
+
       input[type="color"] {
         width: 100%;
         margin-top: 3px;
       }
+
       input[type="range"] {
         width: 100%;
         margin-top: 10px;
       }
+
       .heading-section {
         margin-top: 35px;
         margin-bottom: 15px;
       }
+
       .section-title {
         color: white;
-        font-size: 15px;
+        font-size: 14px;
       }
+
       hr {
         color: rgba(255, 255, 255, 0.3);
       }
+
       .section-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
       }
+
       .toggle-btn {
         background: none;
         border: none;
@@ -61,14 +96,17 @@
         padding: 0 5px;
         transition: transform 0.3s;
       }
+
       .toggle-btn.collapsed {
         transform: rotate(-90deg);
       }
+
       .section-content {
         max-height: 500px;
         overflow: hidden;
         transition: max-height 0.3s ease-out;
       }
+
       .section-content.collapsed {
         max-height: 0;
       }
@@ -76,120 +114,172 @@
   </head>
   <body>
     <h3>YT Captions</h3>
-    <p id="version-number" style="color: white; opacity: 0.75; text-align: right">
+    <p
+      id="version-number"
+      style="color: white; opacity: 0.75; text-align: right"
+    >
       Version 1.5
     </p>
 
+    <!-- yt homescreen and layout controls -->
     <div>
-      <div class="heading-section">
-        <div class="section-header">
-          <span class="section-title">Manage Captions</span>
-        </div>
-        <hr />
-      </div>
-      <div class="section-content" id="captions-section">
-        <label>
-          <div style="display: flex; justify-content: space-between">
-            <span>Caption size</span>
-            <span id="captionSizeValue">35px</span>
-          </div>
-          <input type="range" id="captionSize" min="20" max="50" value="5" />
-        </label>
+      <h5 class="section-title">YouTube Layout Controls</h5>
+
+      <div id="layout-controls-wrapper">
         <div>
-          <label for="captionColor">Caption color</label>
-          <input type="color" id="captionColor" value="#ffff00" />
-        </div>
-      </div>
-    </div>
-
-    <div>
-      <div class="heading-section">
-        <div class="section-header">
-          <span class="section-title">Manage Overlay</span>
-        </div>
-        <hr />
-      </div>
-      <div class="section-content" id="overlay-section">
-        <label>
-          <div style="display: flex; justify-content: space-between">
-            <span>Overlay opacity</span>
-            <span id="blackBoxOpacityValue">0</span>
+          <div class="heading-section">
+            <div class="section-header">
+              <span class="section-title">Top Bar Opacity</span>
+            </div>
+            <hr />
           </div>
-          <input
-            type="range"
-            id="blackBoxOpacity"
-            min="0"
-            max="1"
-            step="0.1"
-            value="0"
-          />
-        </label>
-      </div>
-    </div>
-
-    <div>
-      <div class="heading-section">
-        <div class="section-header">
-          <span class="section-title">Manage Sections</span>
+          <div class="section-content" id="topbar-section">
+            <label>
+              <div style="display: flex; justify-content: space-between">
+                <span>Top bar opacity</span>
+                <span id="topBarOpacityValue">100%</span>
+              </div>
+              <input
+                type="range"
+                id="topBarOpacity"
+                min="0"
+                max="100"
+                value="100"
+              />
+            </label>
+          </div>
         </div>
-        <hr />
-      </div>
-      <div class="section-content" id="elements-section">
-        <label>
-          <input type="checkbox" id="toggleTopRow" /> Show video top row
-        </label>
-        <label>
-          <input type="checkbox" id="toggleComments" /> Show comments section
-        </label>
-        <label>
-          <input type="checkbox" id="toggleSimilarVideos" /> Show similar videos
-        </label>
-        <label>
-          <input type="checkbox" id="toggleDescription" /> Show video description
-        </label>
       </div>
     </div>
 
+    <!-- yt player screen controls -->
     <div>
-      <div class="heading-section">
-        <div class="section-header">
-          <span class="section-title">Manage Controls</span>
+      <h5 class="section-title">YouTube Player Screen Controls</h5>
+
+      <div id="player-controls-wrapper">
+        <div>
+          <div class="heading-section">
+            <div class="section-header">
+              <span class="section-title">Manage Captions</span>
+            </div>
+            <hr />
+          </div>
+          <div class="section-content" id="captions-section">
+            <label>
+              <div style="display: flex; justify-content: space-between">
+                <span>Caption size</span>
+                <span id="captionSizeValue">35px</span>
+              </div>
+              <input
+                type="range"
+                id="captionSize"
+                min="20"
+                max="50"
+                value="5"
+              />
+            </label>
+            <div>
+              <label for="captionColor">Caption color</label>
+              <input type="color" id="captionColor" value="#ffff00" />
+            </div>
+          </div>
         </div>
-        <hr />
-      </div>
-      <div class="section-content" id="controls-section">
-        <label>
-          <input type="checkbox" id="toggleShareButton" /> Show Share button
-        </label>
-        <label>
-          <input type="checkbox" id="toggleDownloadButton" /> Show Download button
-        </label>
-        <label>
-          <input type="checkbox" id="toggleClipButton" /> Show Clip button
-        </label>
-        <label>
-          <input type="checkbox" id="toggleSaveButton" /> Show Save button
-        </label>
-        <label>
-          <input type="checkbox" id="toggleChannelDetails" /> Show Channel Data
-        </label>
+
+        <div>
+          <div class="heading-section">
+            <div class="section-header">
+              <span class="section-title">Manage Overlay</span>
+            </div>
+            <hr />
+          </div>
+          <div class="section-content" id="overlay-section">
+            <label>
+              <div style="display: flex; justify-content: space-between">
+                <span>Overlay opacity</span>
+                <span id="blackBoxOpacityValue">0</span>
+              </div>
+              <input
+                type="range"
+                id="blackBoxOpacity"
+                min="0"
+                max="1"
+                step="0.1"
+                value="0"
+              />
+            </label>
+          </div>
+        </div>
+
+        <div>
+          <div class="heading-section">
+            <div class="section-header">
+              <span class="section-title">Manage Sections</span>
+            </div>
+            <hr />
+          </div>
+          <div class="section-content" id="elements-section">
+            <label>
+              <input type="checkbox" id="toggleTopRow" /> Show video top row
+            </label>
+            <label>
+              <input type="checkbox" id="toggleComments" /> Show comments
+              section
+            </label>
+            <label>
+              <input type="checkbox" id="toggleSimilarVideos" /> Show similar
+              videos
+            </label>
+            <label>
+              <input type="checkbox" id="toggleDescription" /> Show video
+              description
+            </label>
+          </div>
+        </div>
+
+        <div>
+          <div class="heading-section">
+            <div class="section-header">
+              <span class="section-title">Manage Controls</span>
+            </div>
+            <hr />
+          </div>
+          <div class="section-content" id="controls-section">
+            <label>
+              <input type="checkbox" id="toggleShareButton" /> Show Share button
+            </label>
+            <label>
+              <input type="checkbox" id="toggleDownloadButton" /> Show Download
+              button
+            </label>
+            <label>
+              <input type="checkbox" id="toggleClipButton" /> Show Clip button
+            </label>
+            <label>
+              <input type="checkbox" id="toggleSaveButton" /> Show Save button
+            </label>
+            <label>
+              <input type="checkbox" id="toggleChannelDetails" /> Show Channel
+              Data
+            </label>
+          </div>
+        </div>
+
+        <div>
+          <div class="heading-section">
+            <div class="section-header">
+              <span class="section-title">Experimental Video Effects</span>
+            </div>
+            <hr />
+          </div>
+          <div class="section-content" id="effects-section">
+            <label>
+              <input type="checkbox" id="toggleBlackAndWhite" /> Black & White
+              video
+            </label>
+          </div>
+        </div>
       </div>
     </div>
-
-    <div>
-      <div class="heading-section">
-        <div class="section-header">
-          <span class="section-title">Experimental Video Effects</span>
-        </div>
-        <hr />
-      </div>
-      <div class="section-content" id="effects-section">
-        <label>
-          <input type="checkbox" id="toggleBlackAndWhite" /> Black & White video
-        </label>
-      </div>
-    </div>
-
     <script src="popup.js"></script>
   </body>
 </html>

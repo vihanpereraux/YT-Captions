@@ -12,7 +12,8 @@ const sendSettingsToContent = () => {
         captionColor: document.getElementById('captionColor').value,
         captionSize: document.getElementById('captionSize').value,
         blackBoxOpacity: document.getElementById('blackBoxOpacity').value,
-        blackAndWhite: document.getElementById('toggleBlackAndWhite').checked
+        blackAndWhite: document.getElementById('toggleBlackAndWhite').checked,
+        topBarOpacity: document.getElementById('topBarOpacity').value
     };
 
     chrome.storage.local.set(settings);
@@ -29,11 +30,11 @@ const sendSettingsToContent = () => {
 const toggleSection = (sectionName, isCollapsed) => {
     const button = document.querySelector(`[data-section="${sectionName}"]`);
     const content = document.getElementById(`${sectionName}-section`);
-    
+
     if (button && content) {
         button.classList.toggle('collapsed', isCollapsed);
         content.classList.toggle('collapsed', isCollapsed);
-        
+
         chrome.storage.local.get(['collapsedSections'], (result) => {
             const collapsedSections = result.collapsedSections || {};
             collapsedSections[sectionName] = isCollapsed;
@@ -45,13 +46,13 @@ const toggleSection = (sectionName, isCollapsed) => {
 const initializeSections = () => {
     chrome.storage.local.get(['collapsedSections'], (result) => {
         const collapsedSections = result.collapsedSections || {};
-        
+
         document.querySelectorAll('.toggle-btn').forEach(button => {
             const sectionName = button.dataset.section;
             const isCollapsed = collapsedSections[sectionName] ?? false;
-            
+
             toggleSection(sectionName, isCollapsed);
-            
+
             button.addEventListener('click', () => {
                 const isCurrentlyCollapsed = button.classList.contains('collapsed');
                 toggleSection(sectionName, !isCurrentlyCollapsed);
@@ -64,7 +65,7 @@ const getCurrentSettings = () => {
     chrome.storage.local.get([
         'showTopRow', 'showComments', 'showSimilarVideos', 'showDescription',
         'showShareButton', 'showDownloadButton', 'showClipButton', 'showSaveButton',
-        'showChannelDetails', 'captionColor', 'captionSize', 'blackBoxOpacity', 'blackAndWhite'
+        'showChannelDetails', 'captionColor', 'captionSize', 'blackBoxOpacity', 'blackAndWhite', 'topBarOpacity'
     ], (settings) => {
         document.getElementById('toggleTopRow').checked = settings.showTopRow ?? true;
         document.getElementById('toggleComments').checked = settings.showComments ?? true;
@@ -81,6 +82,8 @@ const getCurrentSettings = () => {
         document.getElementById('blackBoxOpacity').value = settings.blackBoxOpacity ?? 0;
         document.getElementById('blackBoxOpacityValue').textContent = settings.blackBoxOpacity ?? 0;
         document.getElementById('toggleBlackAndWhite').checked = settings.blackAndWhite ?? false;
+        document.getElementById('topBarOpacity').value = settings.topBarOpacity ?? 100;
+        document.getElementById('topBarOpacityValue').textContent = `${settings.topBarOpacity ?? 100}%`;
 
         sendSettingsToContent();
     });
@@ -107,7 +110,14 @@ document.getElementById('blackBoxOpacity').addEventListener('input', () => {
 });
 document.getElementById('toggleBlackAndWhite').addEventListener('change', sendSettingsToContent);
 
+// Add event listener for the new control
+document.getElementById('topBarOpacity').addEventListener('input', () => {
+    document.getElementById('topBarOpacityValue').textContent = `${document.getElementById('topBarOpacity').value}%`;
+    sendSettingsToContent();
+});
+
 document.addEventListener('DOMContentLoaded', () => {
     getCurrentSettings();
     initializeSections();
 });
+
