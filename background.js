@@ -13,7 +13,11 @@ chrome.runtime.onInstalled.addListener(() => {
     captionSize: 35,
     blackBoxOpacity: 0,
     blackAndWhite: false,
-    topBarOpacity: 100 // New setting with default value 100%
+    topBarOpacity: 100,
+    thumbnailOpacity: 100,
+    layoutOpacity: 100,
+    leftPanelOpacity: 100,
+    filtersPanelOpacity: 100,
   });
 });
 

@@ -12,7 +12,11 @@ let settings = {
     captionSize: 35,
     blackBoxOpacity: 0,
     blackAndWhite: false,
-    topBarOpacity: 100
+    topBarOpacity: 100,
+    thumbnailOpacity: 100,
+    layoutOpacity: 100,
+    leftPanelOpacity: 100,
+    filtersPanelOpacity: 100,
 };
 
 const waitForElement = (selector, callback, attempts = 10, interval = 200) => {
@@ -30,7 +34,11 @@ const applySettings = () => {
     updateBlackBox();
     updateVideoFilter();
     setupCaptionObservers();
-    updateTopBarOpacity(); 
+    updateTopBarOpacity();
+    updateThumbnailOpacity();
+    updateLayoutOpacity();
+    updateLeftPanelOpacity();
+    updateFitersPanelOpacity();
 };
 
 const initialize = () => {
@@ -59,12 +67,41 @@ const initialize = () => {
     });
 };
 
+const updateLeftPanelOpacity = () => {
+    const domElement = document.querySelector('ytd-guide-renderer');
+    if (domElement) {
+        domElement.style.opacity = settings.leftPanelOpacity / 100;
+    }
+};
+
 const updateTopBarOpacity = () => {
     const topBar = document.querySelector('#container.ytd-masthead');
     if (topBar) {
         topBar.style.opacity = settings.topBarOpacity / 100;
     }
 };
+
+const updateFitersPanelOpacity = () => {
+    const domElement = document.querySelector(' ytd-feed-filter-chip-bar-renderer');
+    if (domElement) {
+        domElement.style.opacity = settings.filtersPanelOpacity / 100;
+    }
+};
+
+const updateLayoutOpacity = () => {
+    const content = document.querySelector('ytd-rich-grid-renderer');
+    if (content) {
+        content.style.opacity = settings.layoutOpacity / 100;
+    }
+};
+
+const updateThumbnailOpacity = () => {
+    const domElements = document.querySelectorAll('ytd-rich-item-renderer');
+    domElements.forEach(thumbnail => {
+        thumbnail.style.opacity = settings.thumbnailOpacity / 100;
+    });
+};
+
 
 const applyCaptionStyles = (element) => {
     element.style.cssText = `
@@ -165,7 +202,11 @@ chrome.runtime.onMessage.addListener((request) => {
         updateBlackBox();
         updateVideoFilter();
         setupCaptionObservers();
-        updateTopBarOpacity(); // Add this line
+        updateTopBarOpacity();
+        updateThumbnailOpacity();
+        updateLayoutOpacity();
+        updateLeftPanelOpacity();
+        updateFitersPanelOpacity();
     }
 });
 
@@ -178,7 +219,11 @@ chrome.storage.onChanged.addListener((changes) => {
     updateBlackBox();
     updateVideoFilter();
     setupCaptionObservers();
-    updateTopBarOpacity(); // Add this line
+    updateTopBarOpacity();
+    updateThumbnailOpacity();
+    updateLayoutOpacity();
+    updateLeftPanelOpacity();
+    updateFitersPanelOpacity();
 });
 
 initialize();

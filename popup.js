@@ -13,7 +13,11 @@ const sendSettingsToContent = () => {
         captionSize: document.getElementById('captionSize').value,
         blackBoxOpacity: document.getElementById('blackBoxOpacity').value,
         blackAndWhite: document.getElementById('toggleBlackAndWhite').checked,
-        topBarOpacity: document.getElementById('topBarOpacity').value
+        topBarOpacity: document.getElementById('topBarOpacity').value,
+        thumbnailOpacity: document.getElementById('thumbnailOpacity').value,
+        layoutOpacity: document.getElementById('layoutOpacity').value,
+        leftPanelOpacity: document.getElementById('leftPanelOpacity').value,
+        filtersPanelOpacity: document.getElementById('filtersPanelOpacity').value
     };
 
     chrome.storage.local.set(settings);
@@ -65,7 +69,9 @@ const getCurrentSettings = () => {
     chrome.storage.local.get([
         'showTopRow', 'showComments', 'showSimilarVideos', 'showDescription',
         'showShareButton', 'showDownloadButton', 'showClipButton', 'showSaveButton',
-        'showChannelDetails', 'captionColor', 'captionSize', 'blackBoxOpacity', 'blackAndWhite', 'topBarOpacity'
+        'showChannelDetails', 'captionColor', 'captionSize', 'blackBoxOpacity',
+        'blackAndWhite', 'topBarOpacity', 'thumbnailOpacity', 'layoutOpacity'
+        , 'leftPanelOpacity', 'filtersPanelOpacity'
     ], (settings) => {
         document.getElementById('toggleTopRow').checked = settings.showTopRow ?? true;
         document.getElementById('toggleComments').checked = settings.showComments ?? true;
@@ -84,7 +90,16 @@ const getCurrentSettings = () => {
         document.getElementById('toggleBlackAndWhite').checked = settings.blackAndWhite ?? false;
         document.getElementById('topBarOpacity').value = settings.topBarOpacity ?? 100;
         document.getElementById('topBarOpacityValue').textContent = `${settings.topBarOpacity ?? 100}%`;
-
+        document.getElementById('thumbnailOpacity').value = settings.thumbnailOpacity ?? 100;
+        document.getElementById('thumbnailOpacityValue').textContent = `${settings.thumbnailOpacity ?? 100}%`;
+        document.getElementById('layoutOpacity').value = settings.layoutOpacity ?? 100;
+        document.getElementById('layoutOpacityValue').textContent = `${settings.layoutOpacity ?? 100}%`;
+        document.getElementById('leftPanelOpacity').value = settings.leftPanelOpacity ?? 100;
+        document.getElementById('leftPanelOpacityValue').textContent = `${settings.leftPanelOpacity ?? 100}%`;
+        document.getElementById('filtersPanelOpacity').value = settings.filtersPanelOpacity ?? 100;
+        document.getElementById('filtersPanelOpacityValue').textContent = `${settings.filtersPanelOpacity ?? 100}%`;
+        
+        
         sendSettingsToContent();
     });
 };
@@ -110,9 +125,28 @@ document.getElementById('blackBoxOpacity').addEventListener('input', () => {
 });
 document.getElementById('toggleBlackAndWhite').addEventListener('change', sendSettingsToContent);
 
-// Add event listener for the new control
 document.getElementById('topBarOpacity').addEventListener('input', () => {
     document.getElementById('topBarOpacityValue').textContent = `${document.getElementById('topBarOpacity').value}%`;
+    sendSettingsToContent();
+});
+
+document.getElementById('leftPanelOpacity').addEventListener('input', () => {
+    document.getElementById('leftPanelOpacityValue').textContent = `${document.getElementById('leftPanelOpacity').value}%`;
+    sendSettingsToContent();
+});
+
+document.getElementById('filtersPanelOpacity').addEventListener('input', () => {
+    document.getElementById('filtersPanelOpacityValue').textContent = `${document.getElementById('filtersPanelOpacity').value}%`;
+    sendSettingsToContent();
+});
+
+document.getElementById('thumbnailOpacity').addEventListener('input', () => {
+    document.getElementById('thumbnailOpacityValue').textContent = `${document.getElementById('thumbnailOpacity').value}%`;
+    sendSettingsToContent();
+});
+
+document.getElementById('layoutOpacity').addEventListener('input', () => {
+    document.getElementById('layoutOpacityValue').textContent = `${document.getElementById('layoutOpacity').value}%`;
     sendSettingsToContent();
 });
 
