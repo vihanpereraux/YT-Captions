@@ -7,37 +7,37 @@ A tiny Firefox extension designed for people ( including myself : ) ) with dry e
 ## Features
 
 ### Home Screen Customizations
-- **Left Panel Control**: Adjust the visibility of the navigation sidebar
-- **Top Bar Control**: Customize the opacity of the YouTube header
-- **Filters Panel**: Modify the visibility of the filters section
-- **Thumbnail Control**: Adjust the opacity of video thumbnails
-- **Layout Management**: Fine-tune the overall content grid visibility
+- **Left Panel Control**: Adjust the visibility of the navigation sidebar.
+- **Top Bar Control**: Customize the opacity of the YouTube header.
+- **Filters Panel**: Modify the visibility of the filters section.
+- **Thumbnail Control**: Adjust the opacity of video thumbnails.
+- **Layout Management**: Fine-tune the overall content grid visibility.
 
 ### Video Player Customizations
 
 #### Element Controls
 - **Button Visibility**: Toggle visibility of:
-  - Share button
-  - Download button
-  - Clip button
-  - Save button
-  - Channel details
+  - Share button.
+  - Download button.
+  - Clip button.
+  - Save button.
+  - Channel details.
 
 #### Section Management
 - **Toggle Visibility** of:
-  - Channel metadata section
-  - Video description
-  - Comments section
-  - Similar videos section
+  - Channel metadata section.
+  - Video description.
+  - Comments section.
+  - Similar videos section.
 
 #### Caption Customization
-- **Size Control**: Adjust caption size from 20px to 50px
-- **Color Selection**: Choose custom caption colors
-- **Background**: Transparent caption background for better visibility
+- **Size Control**: Adjust caption size from 20px to 50px.
+- **Color Selection**: Choose custom caption colors.
+- **Background**: Transparent caption background for better visibility.
 
 #### Video Enhancement
-- **Overlay Control**: Add a black overlay with adjustable opacity
-- **Video Effects**: Toggle black & white filter for different viewing experiences
+- **Overlay Control**: Add a black overlay with adjustable opacity.
+- **Video Effects**: Toggle black & white filter for different viewing experiences.
 
 ## Installation (Option 01) - As a temporary plugin 
 
@@ -63,44 +63,44 @@ A tiny Firefox extension designed for people ( including myself : ) ) with dry e
 
 ## Usage
 
-1. Click the extension icon in the Firefox toolbar to open the settings panel
+1. Click the extension icon in the Firefox toolbar to open the settings panel.
 2. Customize your YouTube experience:
-   - Adjust home screen element visibility
-   - Configure video player controls
-   - Customize caption appearance
-   - Set overlay preferences
-   - Toggle video effects
-3. All changes are applied instantly to the active YouTube tab
-4. Settings are automatically saved and persist between sessions
+   - Adjust home screen element visibility.
+   - Configure video player controls.
+   - Customize caption appearance.
+   - Set overlay preferences.
+   - Toggle video effects (experimental).
+3. All changes are applied instantly to the active YouTube tab.
+4. Settings are automatically saved and persist between sessions.
 
 ## Noob Technical Details : )
 
 ### File Structure
-- `popup.html`: Extension UI and settings panel
-- `popup.js`: Settings management and communication handler
-- `content.js`: YouTube page modifications and feature implementation
-- `background.js`: Browser event handling and extension lifecycle management
-- `manifest.json`: Extension configuration and permissions
-- `icons/`: Extension icons in various sizes
+- `popup.html`: Extension UI and settings panel.
+- `popup.js`: Settings management and communication handler.
+- `content.js`: YouTube page modifications and feature implementation.
+- `background.js`: Browser event handling and extension lifecycle management.
+- `manifest.json`: Extension configuration and permissions.
+- `icons/`: Extension icons in various sizes.
 
 ### Permissions
 The extension requires the following permissions:
-- `storage`: For saving user preferences
-- `activeTab`: For modifying YouTube page content
-- `tabs`: For handling tab updates and navigation
-- `scripting`: For injecting required scripts
-- `webNavigation`: For handling YouTube page navigation
+- `storage`: For saving user preferences.
+- `activeTab`: For modifying YouTube page content.
+- `tabs`: For handling tab updates and navigation.
+- `scripting`: For injecting required scripts.
+- `webNavigation`: For handling YouTube page navigation.
 
 ## Development
 
 ### Setup
-1. Fork and clone the repository
-2. Make your changes to the relevant files
+1. Fork and clone the repository.
+2. Make your changes to the relevant files.
 3. Test the extension:
-   - Navigate to `about:debugging#/runtime/this-firefox`
-   - Click "Load Temporary Add-on"
-   - Select `manifest.json`
-   - Verify your changes on YouTube
+   - Navigate to `about:debugging#/runtime/this-firefox`.
+   - Click "Load Temporary Add-on".
+   - Select `manifest.json`.
+   - Verify your changes on YouTube.
 
 ## License
 This project is not licensed at all. Just use at your own discretion and do whatever you like : )
