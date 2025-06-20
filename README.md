@@ -1,4 +1,4 @@
-# YT Captions - YouTube Captions and Layout Customizer
+# YT Captions - YouTube Captions & Layout Customizer
 
 A tiny Firefox extension designed for people ( including myself : ) ) with dry eyes and Anisometropia. It enhances your YouTube viewing experience by providing comprehensive customization options for captions, UI elements, and video player features—helping reduce eye strain and improve accessibility.
 
