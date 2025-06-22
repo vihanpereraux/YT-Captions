@@ -3,6 +3,16 @@
   "name": "YT Captions",
   "version": "1.6",
   "description": "Enhanced YouTube viewing experience",
+   "applications": {
+    "gecko": {
+      "id": "yt-captions@gmail.com"
+    }
+  },
+   "browser_specific_settings": {
+    "gecko": {
+      "id": "yt-captions@gmail.com"
+    }
+  },
   "permissions": [
     "storage",
     "activeTab",
